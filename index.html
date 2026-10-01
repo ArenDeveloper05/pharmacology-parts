@@ -1,96 +1,661 @@
+   
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <script defer src="/_vercel/insights/script.js"></script>
+<head>
+<meta charset="UTF-8">
+  <script defer src="/_vercel/insights/script.js"></script>
     <link
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/@exampledev/new.css@1.1.2/new.min.css"
     />
-    <title>Vercel HTML Starter</title>
-    <meta
-      name="description"
-      content="High-performance HTML based website template."
-    />
-  </head>
-  <body>
-    <h1>Vercel HTML Starter</h1>
-    <p>
-      This template is a simple, but powerful single
-      <code>index.html</code> file deployed to
-      <a href="https://vercel.com">Vercel</a>. When your site is deployed, all
-      static assets (like HTML, JavaScript, CSS, images, and more) are deployed
-      globally to every
-      <a href="https://vercel.com/docs/concepts/edge-network/overview"
-        >Vercel Edge Network</a
-      >
-      region.
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pharmacology Knowledge Tree</title>
+
+<style>
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    min-height: 100vh;
+    padding: 40px 20px;
+    font-family: "Segoe UI", Arial, sans-serif;
+    background:
+        radial-gradient(circle at top left, #e8f1ff, transparent 35%),
+        radial-gradient(circle at bottom right, #e9e4ff, transparent 35%),
+        #f5f7fb;
+    color: #1f2937;
+}
+
+.container {
+    max-width: 1050px;
+    margin: auto;
+    padding: 36px 42px 44px;
+    background: rgba(255, 255, 255, 0.94);
+    border: 1px solid rgba(148, 163, 184, 0.25);
+    border-radius: 24px;
+    box-shadow: 0 20px 60px rgba(15, 23, 42, 0.10);
+}
+
+h1 {
+    margin: 0 0 8px;
+    font-size: 34px;
+    color: #111827;
+}
+
+.subtitle {
+    margin: 0 0 32px;
+    color: #64748b;
+    font-size: 15px;
+}
+
+.tree {
+    font-size: 17px;
+    line-height: 1.65;
+}
+
+ul {
+    list-style: none;
+    margin: 0;
+    padding-left: 32px;
+    position: relative;
+}
+
+.tree > ul {
+    padding-left: 0;
+}
+
+li {
+    position: relative;
+    padding: 5px 0 5px 30px;
+}
+
+li::before {
+    content: "";
+    position: absolute;
+    left: 5px;
+    top: 0;
+    width: 1px;
+    height: 100%;
+    background: #cbd5e1;
+}
+
+li::after {
+    content: "";
+    position: absolute;
+    left: 5px;
+    top: 22px;
+    width: 23px;
+    height: 1px;
+    background: #cbd5e1;
+}
+
+li:last-child::before {
+    height: 23px;
+}
+
+/* Tree items */
+
+.branch {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    position: relative;
+    padding: 8px 14px;
+    border-radius: 12px;
+    cursor: default;
+
+    transition:
+        transform 0.25s ease,
+        background 0.25s ease,
+        box-shadow 0.25s ease;
+}
+
+.branch:hover {
+    transform: translateX(5px);
+    background: #f1f5f9;
+    box-shadow: 0 8px 24px rgba(15, 23, 42, 0.08);
+}
+
+/* Root */
+
+.root {
+    font-size: 24px;
+    font-weight: 750;
+    color: #172554;
+    background: #eef2ff;
+    padding: 12px 18px;
+    box-shadow: 0 8px 24px rgba(79, 70, 229, 0.10);
+}
+
+/* Main categories */
+
+.level1 {
+    font-weight: 700;
+    color: #1e3a8a;
+}
+
+/* Subcategories */
+
+.level2 {
+    font-weight: 600;
+    color: #334155;
+}
+
+/* Lowest level */
+
+.level3 {
+    color: #475569;
+}
+
+/* Small circles */
+
+.icon {
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: currentColor;
+    flex: 0 0 auto;
+    opacity: 0.65;
+}
+
+/* Armenian translation */
+
+.translation {
+    position: absolute;
+    left: 100%;
+    top: 50%;
+
+    transform:
+        translate(14px, -50%)
+        scale(0.92);
+
+    transform-origin: left center;
+
+    opacity: 0;
+    visibility: hidden;
+
+    white-space: nowrap;
+    pointer-events: none;
+    z-index: 20;
+
+    padding: 9px 14px;
+
+    border-radius: 11px;
+
+    background: rgba(15, 23, 42, 0.96);
+    color: white;
+
+    font-family:
+        "Segoe UI",
+        "Noto Sans Armenian",
+        Arial,
+        sans-serif;
+
+    font-size: 14px;
+    font-weight: 500;
+
+    box-shadow:
+        0 12px 30px rgba(15, 23, 42, 0.24);
+
+    transition:
+        opacity 0.22s ease,
+        transform 0.28s cubic-bezier(0.2, 0.8, 0.2, 1),
+        visibility 0.22s ease;
+}
+
+/* Tooltip arrow */
+
+.translation::before {
+    content: "";
+
+    position: absolute;
+    left: -6px;
+    top: 50%;
+
+    transform: translateY(-50%);
+
+    border-top: 6px solid transparent;
+    border-bottom: 6px solid transparent;
+    border-right: 6px solid rgba(15, 23, 42, 0.96);
+}
+
+/* Hover animation */
+
+.branch:hover .translation {
+    opacity: 1;
+    visibility: visible;
+
+    transform:
+        translate(14px, -50%)
+        scale(1);
+}
+
+/* Mobile */
+
+@media (max-width: 760px) {
+
+    body {
+        padding: 20px 10px;
+    }
+
+    .container {
+        padding: 25px 18px 30px;
+        border-radius: 18px;
+    }
+
+    h1 {
+        font-size: 27px;
+    }
+
+    .tree {
+        font-size: 15px;
+    }
+
+    ul {
+        padding-left: 20px;
+    }
+
+    li {
+        padding-left: 22px;
+    }
+
+    li::after {
+        width: 16px;
+    }
+
+    .translation {
+        left: auto;
+        right: 0;
+        top: calc(100% + 7px);
+
+        transform:
+            translateY(-4px)
+            scale(0.96);
+    }
+
+    .translation::before {
+        left: auto;
+        right: 18px;
+        top: -6px;
+
+        transform: none;
+
+        border-left: 6px solid transparent;
+        border-right: 6px solid transparent;
+        border-bottom: 6px solid rgba(15, 23, 42, 0.96);
+        border-top: 0;
+    }
+
+    .branch:hover .translation {
+        transform:
+            translateY(0)
+            scale(1);
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1>Pharmacology</h1>
+
+    <p class="subtitle">
+        Hover over any term to see its Armenian translation.
     </p>
-    <h2>Simple, privacy-friendly analytics</h2>
-    <p>
-      Want to understand your visitor traffic? Vercel Analytics gives you
-      first-party, privacy-friendly traffic analytics for your HTML site. This
-      template is already configured using the following script:
-    </p>
-    <pre><code>&lt;script defer src="/_vercel/insights/script.js"&gt;&lt;/script&gt;</code></pre>
-    <p>
-      Learn more about
-      <a href="https://vercel.com/analytics">Vercel Analytics</a>.
-    </p>
-    <h2>Integrated with git</h2>
-    <p>
-      Deploying updates to your site is as simple as
-      <code>git push</code> thanks to Vercel's advanced
-      <a href="https://vercel.com/docs/concepts/git">Git Integration</a>.
-      Support for GitHub, GitLab, Bitbucket is zero-configuration, and with the
-      flexible Vercel CLI and API, you can integrate with any tool possible.
-    </p>
-    <p>
-      Learn more about
-      <a href="https://vercel.com/docs/concepts/git">Git Integration</a>.
-    </p>
-    <h2>Fast <code>gzip</code> compression</h2>
-    <p>
-      To help ensure the smallest possible file sizes for your static assets,
-      the Vercel Edge Network compresses files by default using
-      <code>gzip</code>. You can also optionally use
-      <code>brotli</code> compressesion if you prefer.
-    </p>
-    <p>
-      Learn more about
-      <a href="https://vercel.com/docs/concepts/edge-network/compression"
-        >compression</a
-      >.
-    </p>
-    <h2>Advanced routing configuration</h2>
-    <p>
-      Vercel gives you a variety of ways to configure the routing of your
-      website. For example, adding redirects, rewrites, or headers to your page.
-      While you can use <code>vercel.json</code> to define these through JSON,
-      you can also express your routing configuration as code using
-      <a href="https://vercel.com/docs/concepts/functions/edge-middleware"
-        >Vercel Edge Middleware</a
-      >.
-    </p>
-    <p>
-      Middleware runs before the
-      <a href="https://vercel.com/docs/concepts/edge-network/caching"
-        >Vercel Edge Network Cache</a
-      >, so you can configure routing exactly as your application needs. For
-      example, this template uses <code>middleware.js</code> defined in the root
-      of the repository to add additional security headers to the site:
-    </p>
-    <pre><code>referrer-policy: origin-when-cross-origin
-strict-transport-security: max-age=31536000; includeSubDomains; preload
-x-content-type-options: nosniff
-x-dns-prefetch-control: on
-x-frame-options: DENY</code></pre>
-    <p>
-      Learn more about
-      <a href="https://vercel.com/docs/concepts/functions/edge-middleware"
-        >Vercel Edge Middleware</a
-      >.
-    </p>
-  </body>
+
+    <div class="tree">
+
+        <ul>
+
+            <!-- PHARMACOLOGY -->
+
+            <li>
+
+                <span class="branch root">
+                    <span class="icon"></span>
+                    PHARMACOLOGY
+                    <span class="translation">
+                        (Դեղագիտություն)
+                    </span>
+                </span>
+
+                <ul>
+
+                    <!-- PHARMACOKINETICS -->
+
+                    <li>
+
+                        <span class="branch level1">
+                            <span class="icon"></span>
+                            Pharmacokinetics (PK)
+                            <span class="translation">
+                                (Ֆարմակոկինետիկա)
+                            </span>
+                        </span>
+
+                        <ul>
+
+                            <!-- ADME -->
+
+                            <li>
+
+                                <span class="branch level2">
+                                    <span class="icon"></span>
+                                    ADME
+                                    <span class="translation">
+                                        (Ներծծում, բաշխում, մետաբոլիզմ, հեռացում)
+                                    </span>
+                                </span>
+
+                                <ul>
+
+                                    <li>
+                                        <span class="branch level3">
+                                            <span class="icon"></span>
+                                            Absorption
+                                            <span class="translation">
+                                                (Ներծծում)
+                                            </span>
+                                        </span>
+                                    </li>
+
+                                    <li>
+                                        <span class="branch level3">
+                                            <span class="icon"></span>
+                                            Distribution
+                                            <span class="translation">
+                                                (Բաշխում)
+                                            </span>
+                                        </span>
+                                    </li>
+
+                                    <li>
+                                        <span class="branch level3">
+                                            <span class="icon"></span>
+                                            Metabolism
+                                            <span class="translation">
+                                                (Մետաբոլիզմ / կենսափոխակերպում)
+                                            </span>
+                                        </span>
+                                    </li>
+
+                                    <li>
+                                        <span class="branch level3">
+                                            <span class="icon"></span>
+                                            Excretion
+                                            <span class="translation">
+                                                (Հեռացում / էքսկրեցիա)
+                                            </span>
+                                        </span>
+                                    </li>
+
+                                </ul>
+
+                            </li>
+
+                        </ul>
+
+                    </li>
+
+
+                    <!-- PHARMACODYNAMICS -->
+
+                    <li>
+
+                        <span class="branch level1">
+                            <span class="icon"></span>
+                            Pharmacodynamics (PD)
+                            <span class="translation">
+                                (Ֆարմակոդինամիկա)
+                            </span>
+                        </span>
+
+                        <ul>
+
+                            <li>
+                                <span class="branch level2">
+                                    <span class="icon"></span>
+                                    Mechanism of Action
+                                    <span class="translation">
+                                        (Գործողության մեխանիզմ)
+                                    </span>
+                                </span>
+                            </li>
+
+                            <li>
+                                <span class="branch level2">
+                                    <span class="icon"></span>
+                                    Receptors
+                                    <span class="translation">
+                                        (Ռեցեպտորներ)
+                                    </span>
+                                </span>
+                            </li>
+
+                            <li>
+                                <span class="branch level2">
+                                    <span class="icon"></span>
+                                    Dose–Response
+                                    <span class="translation">
+                                        (Դոզա–պատասխան կապ)
+                                    </span>
+                                </span>
+                            </li>
+
+                            <li>
+                                <span class="branch level2">
+                                    <span class="icon"></span>
+                                    Efficacy
+                                    <span class="translation">
+                                        (Արդյունավետություն)
+                                    </span>
+                                </span>
+                            </li>
+
+                            <li>
+                                <span class="branch level2">
+                                    <span class="icon"></span>
+                                    Potency
+                                    <span class="translation">
+                                        (Պոտենցիա / ազդեցության ուժ)
+                                    </span>
+                                </span>
+                            </li>
+
+                        </ul>
+
+                    </li>
+
+
+                    <!-- PHARMACOTHERAPEUTICS -->
+
+                    <li>
+
+                        <span class="branch level1">
+                            <span class="icon"></span>
+                            Pharmacotherapeutics
+                            <span class="translation">
+                                (Ֆարմակոթերապիա)
+                            </span>
+                        </span>
+
+                        <ul>
+
+                            <li>
+                                <span class="branch level2">
+                                    <span class="icon"></span>
+                                    Indications
+                                    <span class="translation">
+                                        (Ցուցումներ)
+                                    </span>
+                                </span>
+                            </li>
+
+                            <li>
+                                <span class="branch level2">
+                                    <span class="icon"></span>
+                                    Contraindications
+                                    <span class="translation">
+                                        (Հակացուցումներ)
+                                    </span>
+                                </span>
+                            </li>
+
+                            <li>
+                                <span class="branch level2">
+                                    <span class="icon"></span>
+                                    Dosing
+                                    <span class="translation">
+                                        (Դեղաչափավորում)
+                                    </span>
+                                </span>
+                            </li>
+
+                            <li>
+                                <span class="branch level2">
+                                    <span class="icon"></span>
+                                    Drug Interactions
+                                    <span class="translation">
+                                        (Դեղերի փոխազդեցություններ)
+                                    </span>
+                                </span>
+                            </li>
+
+                        </ul>
+
+                    </li>
+
+
+                    <!-- TOXICOLOGY -->
+
+                    <li>
+
+                        <span class="branch level1">
+                            <span class="icon"></span>
+                            Toxicology
+                            <span class="translation">
+                                (Թունաբանություն)
+                            </span>
+                        </span>
+
+                        <ul>
+
+                            <li>
+                                <span class="branch level2">
+                                    <span class="icon"></span>
+                                    Toxicity
+                                    <span class="translation">
+                                        (Թունավորություն)
+                                    </span>
+                                </span>
+                            </li>
+
+                            <li>
+                                <span class="branch level2">
+                                    <span class="icon"></span>
+                                    Adverse Effects
+                                    <span class="translation">
+                                        (Անցանկալի ազդեցություններ)
+                                    </span>
+                                </span>
+                            </li>
+
+                            <li>
+                                <span class="branch level2">
+                                    <span class="icon"></span>
+                                    Safety
+                                    <span class="translation">
+                                        (Անվտանգություն)
+                                    </span>
+                                </span>
+                            </li>
+
+                        </ul>
+
+                    </li>
+
+
+                    <!-- CLINICAL PHARMACOLOGY -->
+
+                    <li>
+
+                        <span class="branch level1">
+                            <span class="icon"></span>
+                            Clinical Pharmacology
+                            <span class="translation">
+                                (Կլինիկական ֆարմակոլոգիա)
+                            </span>
+                        </span>
+
+                        <ul>
+
+                            <li>
+                                <span class="branch level2">
+                                    <span class="icon"></span>
+                                    PK Studies
+                                    <span class="translation">
+                                        (Ֆարմակոկինետիկ ուսումնասիրություններ)
+                                    </span>
+                                </span>
+                            </li>
+
+                            <li>
+                                <span class="branch level2">
+                                    <span class="icon"></span>
+                                    PD Studies
+                                    <span class="translation">
+                                        (Ֆարմակոդինամիկ ուսումնասիրություններ)
+                                    </span>
+                                </span>
+                            </li>
+
+                            <li>
+                                <span class="branch level2">
+                                    <span class="icon"></span>
+                                    PK/PD Modeling
+                                    <span class="translation">
+                                        (PK/PD մոդելավորում)
+                                    </span>
+                                </span>
+                            </li>
+
+                            <li>
+                                <span class="branch level2">
+                                    <span class="icon"></span>
+                                    Drug–Drug Interactions
+                                    <span class="translation">
+                                        (Դեղ–դեղ փոխազդեցություններ)
+                                    </span>
+                                </span>
+                            </li>
+
+                            <li>
+                                <span class="branch level2">
+                                    <span class="icon"></span>
+                                    Therapeutic Drug Monitoring
+                                    <span class="translation">
+                                        (Թերապևտիկ դեղամոնիթորինգ)
+                                    </span>
+                                </span>
+                            </li>
+
+                        </ul>
+
+                    </li>
+
+                </ul>
+
+            </li>
+
+        </ul>
+
+    </div>
+
+</div>
+
+</body>
 </html>
